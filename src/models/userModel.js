@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema( {
     lastName: String,
     mobile: {
         type: String,
-        unique: true,
+        // unique: true,
         required: true
     },
     emailId: String,
@@ -20,10 +20,10 @@ const userSchema = new mongoose.Schema( {
     //     fatherName: String,
     //     siblingName: String
     // },
-    // cars: [ String  ]
+    cars: [ String  ]
 }, { timestamps: true });
 
-module.exports = mongoose.model('User', userSchema) //users
+module.exports = mongoose.Model('User', userSchema) //users
 
 
 
