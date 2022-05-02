@@ -1,22 +1,17 @@
-
 const express = require('express');
 const router = express.Router();
-const blogController = require("../controller/blogController");
-const authorController = require('../controller/authorController');
-const authorAuth = require('../middleware/auth')
+const authorController = require('../controller/authorController')
+const blogController = require('../controller/blogController')
+const middleWare = require('../middleware/auth')
 
-router.post("/createAuthor",authorController.createAuthor)
-router.post("/loginAuthor", authorController.loginAuthor);
-router.post("/createBlog",authorAuth.authorAuth, blogController.createBlog)
-router.get("/getBlog",authorAuth.authorAuth ,blogController.getBlogs)
-router.put("/updateBlog/:blogId",authorAuth.authorAuth ,blogController.updateBlog)
-router.delete("/deleteBlog/:blogId",authorAuth.jwtauth2, blogController.deleteBlogByBlogId)
-router.delete("/deleteBlogByParams",authorAuth.authorAuth, blogController.deleteBlogByParam)
-//router.post("/createBlog",blogController.createBlogs)
+router.post('/author',authorController.createAuthor)
+router.post('/userLogin', blogController.authorLogin)
 
-
-
-
+router.post("/createBlog", middleWare.tokenValidator, blogController.createBlogs)
+router.get("/getBlog", middleWare.tokenValidator, blogController.getBlogs)
+router.put("/updateBlog/:blogId",middleWare.tokenValidator, blogController.updateBlog)
+router.delete("/deleteBlog/:blogId",middleWare.tokenValidator, blogController.deleteBlogByBlogId)
+router.delete("/deleteBlogByParams", middleWare.tokenValidator, blogController.deleteBlogByParam)
 
 
 
