@@ -5,12 +5,14 @@ const tokenValidator = async function (req, res, next) {
         let token = req.headers["x-Api-key"]
         if (!token) token = req.headers["x-api-key"]
 
-        if (!token) return res.status(401).send({ status: false, msg: "Token must be present" })
+        if (!token) return res.status(403).send({ status: false, msg: "Missing authentication token in request" })
 
         let decodedToken = jwt.verify(token, "My private key")
         if (!decodedToken) {
-            return res.status(401).send({ status: false, msg: "token is invalid" })
+            return res.status(403).send({ status: false, msg: "Invalid authentication token in request" })
         }
+
+        req.authorId = decodedToken.authorId;
         
         next()
     }
