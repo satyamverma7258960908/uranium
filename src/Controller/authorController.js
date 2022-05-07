@@ -101,7 +101,7 @@ const authorLogin = async function(req,res){
         }
         
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))){
-            res.status(400).send({status:false, message: `Emial should be a valid email address`})
+            res.status(400).send({status:false, message: `Email should be a valid email address`})
             return
         }
 

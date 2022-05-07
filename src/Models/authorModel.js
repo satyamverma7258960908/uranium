@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const authorSchema = new mongoose.Schema({
     fname: {
         type: String,
-        required: 'First name is required', //(sonu)
+        required: 'First name is required', 
         trim: true
     },
     lname: {
