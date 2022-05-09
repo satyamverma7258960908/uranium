@@ -37,7 +37,7 @@ const createIntern = async function (req, res) {
 
 
         if (!isValid(email)) {
-            res.status(400).send({ status: false, message: 'Invalid request parameters. Please provide valid email' })
+            res.status(400).send({ status: false, message: 'Invalid request parameters. Please provide  email' })
             return
         }
         if(!(/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(email))) {
