@@ -109,11 +109,7 @@ const validatepincode = (pincode) => {
   if (!validatePassword(data.password)) {
   return res.status(400).send({status: false,msg: "Password should contain at-least one number,one special character and one capital letter",}); //password validation
 }
-if(data.password){
-    if(data.password.length<8 && data.password.length>15){
-    return res.status(400).send({status:false,msg:"Password Min length must be 8 ,Max length 15"});
-    }
-}
+
 if(data.address.street){
 if (!validatefeild(data.address.street)) {
   return res.status(400).send({status: false,msg: "Street must contain Alphabet or Number",});
@@ -140,7 +136,7 @@ const user = await userModel.create(data);
 
 
 
-  //.............................................PHASE (2) POST /login........................................................
+  //.............................................POST /login........................................................
 
 const login = async function (req, res) {
   try {
