@@ -92,7 +92,7 @@ const validatepincode = (pincode) => {
       const findphoneno = await userModel.findOne({ phone: data.phone});
 
       if(findphoneno){
-        return res.status(404).send({ status:false,message: `Phone no. ${data.phone} Already Registered.Please,Give Another Phone.no`})
+        return res.status(400).send({ status:false,message: `Phone no. ${data.phone} Already Registered.Please,Give Another Phone.no`})
     }
 
       if (!data.email){
@@ -107,7 +107,7 @@ const validatepincode = (pincode) => {
       const findemail = await userModel.findOne({ email: data.email }); //email exist or not
 
      if(findemail){
-    return res.status(404).send({ status:false,message:  `Email Id >> ${data.email} Already Registered.Please,Give Another ID`})
+    return res.status(400).send({ status:false,message:  `Email Id >> ${data.email} Already Registered.Please,Give Another ID`})
 }
 
     if (!data.password) {
@@ -170,7 +170,7 @@ const login = async function (req, res) {
     const findemailpass = await userModel.findOne({email: email,password: password,}); //verification for Email Password
 
     if (!findemailpass)// No Data Stored in findemailpass variable Beacuse no entry found with this email id nd password
-      return res.status(404).send({status:false,msg: "Email and Password not Matched" });
+      return res.status(400).send({status:false,msg: "Email and Password not Matched" });
 
       var token = jwt.sign(
         {"UserId": findemailpass._id},
