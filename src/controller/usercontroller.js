@@ -25,10 +25,17 @@ const createuser = async (req, res) => {
     };
 
     //STRING VALIDATION BY REJEX
-    const validatefeild= (shivam) => {
-     return String(shivam).match(
-         /^[a-zA-Z]/);
+    const validatefeild= (name) => {
+     return String(name).match(
+      /^[a-zA-Z]/);
     };
+
+    //Street validation
+    const validateStreet=(street)=>{
+      return String(street).match(
+        /\w+(\s\w+){2,}/
+      )
+    }
 
 
 
@@ -58,8 +65,10 @@ const validatepincode = (pincode) => {
 
     //Title validation by Rejex
     if (!validatefeild(data.title)) {
-      return res.status(400).send({status: false,msg: "Title must contain Alphabet or Number",});
-    }
+    return res.status(400).send({status: false,msg: "Invalid Title",});
+      }
+      let validTitle = ['Mr', 'Mrs', 'Miss'];
+      if(!validTitle.includes(data.title)) return res.status(400).send({ status: false, msg: "Title should be one of Mr, Mrs, Miss" });
 
     if (!data.name){
       return res.status(400).send({ status:false,msg:"Name is missing"});
@@ -67,9 +76,10 @@ const validatepincode = (pincode) => {
 
      //Name validation by Rejex
      if (!validatefeild(data.name)) {
-       return res.status(400).send({status: false,msg: "Name must contain Alphabet or Number",});
+       return res.status(400).send({status: false,msg: "Invalid Name format",});
      }
-
+     let validString = /\d/;
+     if(validString.test(data.name)) return res.status(400).send({ status: false, msg: "Name must be valid it should not contains numbers" });
 
      if (!data.phone){
       return res.status(400).send({status:false,message:"Phone Number is missing"});
@@ -111,7 +121,7 @@ const validatepincode = (pincode) => {
 }
 
 if(data.address.street){
-if (!validatefeild(data.address.street)) {
+if (!validateStreet(data.address.street)) {
   return res.status(400).send({status: false,msg: "Street must contain Alphabet or Number",});
 }}
 if(data.address.city){
