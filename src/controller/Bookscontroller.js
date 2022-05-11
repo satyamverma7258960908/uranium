@@ -16,6 +16,12 @@ const validatefeild= (shivam) => {
  const isValidISBN=(ISBN)=>{
    return String(ISBN).trim().match(/^\+?([1-9]{3})\)?[-. ]?([0-9]{10})$/) }
 
+//Rejex For ReleasedAT
+const isValidDate=(date)=>{
+  return String(date).trim().match(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/gm) }
+
+
+
 //.............................................POST/books........................................................
 
 
@@ -34,7 +40,7 @@ const createBook = async (req, res) => {
     }
     const obj = {
 
-        releasedAt:[ a.getFullYear(),a.getMonth()+1,a.getDate()].join('-')
+        /* releasedAt:[ a.getFullYear(),a.getMonth()+1,a.getDate()].join('-') */
     }
        const title = data.title;
        const excerpt = data.excerpt;
@@ -44,6 +50,7 @@ const createBook = async (req, res) => {
        const subcategory = data.subcategory;
        const reviews = data.reviews;
        const isDeleted = data.isDeleted;
+       const releasedAt = data.releasedAt;
 
 
      if (!title){
@@ -145,6 +152,14 @@ const createBook = async (req, res) => {
         return res.status(400).send({status:false,message:"isDeleted must be false while creating book"});
         }
     }
+
+    if(!releasedAt){
+      return res.status(400).send({status:false, msg: "releasedAt not given" })
+      }
+      obj.releasedAt=releasedAt
+      if (!isValidDate(releasedAt)) {
+        return res.status(400).send({status: false,msg: "Invalid Format of releasedAt",});
+      }
     let decodedtoken = jwt.verify(token, "group51");
     if (decodedtoken.UserId!=obj.userId)  {
         return res.status(401).send({ status: false, msg: "You are Not Authorized To create This Blog With This userId" });
