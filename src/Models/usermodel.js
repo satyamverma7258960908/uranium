@@ -6,14 +6,12 @@ const userModel = new mongoose.Schema(
       required: true,
       enum : ['Mr', 'Mrs', 'Miss'],
       trim: true,
-      toLowerCase: true,
     },
 
     name: {
       type: String,
       required: true,
-      trim: true,
-      toLowerCase: true,
+       trim: true,
     },
 
     phone: {
@@ -27,7 +25,8 @@ const userModel = new mongoose.Schema(
         type:String,
         required: true,
         unique: true,
-        trime:true
+        lowercase:true,
+        trim: true
       },
 
     password : {

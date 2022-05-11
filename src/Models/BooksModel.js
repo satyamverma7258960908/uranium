@@ -5,7 +5,8 @@ const bookSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim:true,
-        unique: true
+        unique: true,
+        lowercase:true
     },
     excerpt: {
         type: String,
@@ -37,6 +38,7 @@ const bookSchema = new mongoose.Schema({
     reviews: {
         type: Number,
         default: 0,
+        trim: true
 
         //comment: Holds number of reviews of this book
     },
@@ -47,10 +49,11 @@ const bookSchema = new mongoose.Schema({
     },
     isDeleted: {
         type: Boolean,
-        default: false
+        default: false,
+        trim: true
     },
     releasedAt: {
-        type: String,
+        type:String ,
         required: true  // format("YYYY-MM-DD")
     },
 

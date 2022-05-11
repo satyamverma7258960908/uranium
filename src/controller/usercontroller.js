@@ -9,48 +9,42 @@ const createuser = async (req, res) => {
 
     //EMAIL VALIDATION BY REJEX
     const validateEmail = (email) => {
-      return String(email)
-        .toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        );
+      return (email).trim().match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
     };
 
     //PASSWORD VALIDATION BY REJEX
     const validatePassword = (password) => {
-      return String(password).match(
-        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/
-
-      );
+      return String(password).trim().match(
+        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,15}$/);
     };
 
     //STRING VALIDATION BY REJEX
     const validatefeild= (name) => {
-     return String(name).match(
+    return String(name).trim().match(
       /^[a-zA-Z]/);
     };
 
-    //Street validation
-    const validateStreet=(street)=>{
-      return String(street).match(
-        /\w+(\s\w+){2,}/
-      )
-    }
 
+    //STREET VALIDATION BY REJEX
+    const validatestreet= (name) => {
+      return String(name).trim().match(
+        /^[a-zA-Z0-9_.-]/);
+      };
 
 
     //VALIDATION OF MOBILE NO BY REJEX
-const validateNumber = (Feild) => {
-    return String(Feild).match(
+    const validateNumber = (Feild) => {
+    return String(Feild).trim().match(
       /^(?:(?:\+|0{0,2})91(\s*|[\-])?|[0]?)?([6789]\d{2}([ -]?)\d{3}([ -]?)\d{4})$/);
   };
 
 
   //VALIDATION OF pincode BY REJEX
-const validatepincode = (pincode) => {
-  return String(pincode).match(
+  const validatepincode = (pincode) => {
+  return String(pincode).trim().match(
     /^(\d{4}|\d{6})$/);
-};
+  };
 
 
 
@@ -63,12 +57,8 @@ const validatepincode = (pincode) => {
      return res.status(400).send({ status:false,msg:"Title is missing"});
     }
 
-    //Title validation by Rejex
-    if (!validatefeild(data.title)) {
-    return res.status(400).send({status: false,msg: "Invalid Title",});
-      }
       let validTitle = ['Mr', 'Mrs', 'Miss'];
-      if(!validTitle.includes(data.title)) return res.status(400).send({ status: false, msg: "Title should be one of Mr, Mrs, Miss" });
+      if(!validTitle.includes(data.title.trim())) return res.status(400).send({ status: false, msg: "Title should be one of Mr, Mrs, Miss" });
 
     if (!data.name){
       return res.status(400).send({ status:false,msg:"Name is missing"});
@@ -78,8 +68,9 @@ const validatepincode = (pincode) => {
      if (!validatefeild(data.name)) {
        return res.status(400).send({status: false,msg: "Invalid Name format",});
      }
+
      let validString = /\d/;
-     if(validString.test(data.name)) return res.status(400).send({ status: false, msg: "Name must be valid it should not contains numbers" });
+     if(validString.test(data.name.trim())) return res.status(400).send({ status: false, msg: "Name must be valid it should not contains numbers" });
 
      if (!data.phone){
       return res.status(400).send({status:false,message:"Phone Number is missing"});
@@ -92,7 +83,7 @@ const validatepincode = (pincode) => {
       const findphoneno = await userModel.findOne({ phone: data.phone});
 
       if(findphoneno){
-        return res.status(400).send({ status:false,message: `Phone no. ${data.phone} Already Registered.Please,Give Another Phone.no`})
+        return res.status(400).send({ status:false,message: `${data.phone} Phone no. Already Registered.Please,Give Another Phone.no`})
     }
 
       if (!data.email){
@@ -107,7 +98,7 @@ const validatepincode = (pincode) => {
       const findemail = await userModel.findOne({ email: data.email }); //email exist or not
 
      if(findemail){
-    return res.status(400).send({ status:false,message:  `Email Id >> ${data.email} Already Registered.Please,Give Another ID`})
+    return res.status(400).send({ status:false,message:  `${data.email} Email Id  Already Registered.Please,Give Another ID`})
 }
 
     if (!data.password) {
@@ -121,7 +112,7 @@ const validatepincode = (pincode) => {
 }
 
 if(data.address.street){
-if (!validateStreet(data.address.street)) {
+if (!validatestreet(data.address.street)) {
   return res.status(400).send({status: false,msg: "Street must contain Alphabet or Number",});
 }}
 if(data.address.city){
@@ -174,7 +165,7 @@ const login = async function (req, res) {
 
       var token = jwt.sign(
         {"UserId": findemailpass._id},
-        "group51",{ expiresIn: '2m' }  //sectetkey
+        "group51",{ expiresIn: '5h' }  //sectetkey
         );
 
 
