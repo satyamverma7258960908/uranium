@@ -4,21 +4,25 @@ const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose')
 const moment=require("moment")
 
+
+
+//STRING VALIDATION BY REJEX
+const validatefeild= (shivam) => {
+  return String(shivam).trim().match(
+      /^[a-zA-Z]/);
+ };
+
+//ISBN VALIDATION BY REJEX
+ const isValidISBN=(ISBN)=>{
+   return String(ISBN).trim().match(/^\+?([1-9]{3})\)?[-. ]?([0-9]{10})$/) }
+
 //.............................................POST/books........................................................
 
 
 const createBook = async (req, res) => {
   try {
 
-    //STRING VALIDATION BY REJEX
-    const validatefeild= (shivam) => {
-     return String(shivam).trim().match(
-         /^[a-zA-Z]/);
-    };
 
-  //ISBN VALIDATION BY REJEX
-    const isValidISBN=(ISBN)=>{
-      return String(ISBN).trim().match(/^\+?([1-9]{3})\)?[-. ]?([0-9]{10})$/) }
 
 
     const data = req.body;
@@ -118,9 +122,12 @@ const createBook = async (req, res) => {
         return res.status(400).send({status:false, msg: "subcategory not given" })
         }
         obj.subcategory=subcategory
-        if (!validatefeild(subcategory)) {
-           return res.status(400).send({status: false,msg: "subcategory must contain Alphabet or Number",});
-         }
+        for(let i=0;i<subcategory.length;i++){
+
+          if (!validatefeild(subcategory[i])) {
+            return res.status(400).send({status: false,msg: "subcategory must contain Alphabet or Number",});
+          }}
+
 
          if(reviews){
             obj.reviews=reviews
@@ -231,6 +238,121 @@ const getbooksbyId = async (req, res) => {
 
 
 
+//...................................................PUT/books/:bookId..........................................................
+
+
+const updateBooksById = async function (req, res) {
+  try {
+
+      const id = req.params.bookId
+
+
+      if (id) {
+
+        let isValidbookId = mongoose.Types.ObjectId.isValid(id);
+
+        if (!isValidbookId) {
+            return res.status(400).send({ status: false, msg: "bookId is Not Valid" });
+        }}
+
+
+
+      const Bookdetails = await BookModel.findOne({ _id: id, isDeleted: false })
+      if(!Bookdetails){
+          return res.status(404).send({status:false,msg:"No book found this bookId"})
+      }
+
+      if(!req.body.title && !req.body.excerpt && !req.body.releasedAt && !req.body.ISBN){
+        return res.status(400).send({status:false,msg:"Please Provide data to update"})
+    }
+
+    if (req.body.title) {
+        Bookdetails.title = req.body.title
+    }
+    if (req.body.excerpt) {
+      Bookdetails.excerpt = req.body.excerpt
+    }
+    if (req.body.releasedAt) {
+      Bookdetails.releasedAt = req.body.releasedAt
+    }
+    if (req.body.ISBN) {
+      Bookdetails.ISBN = req.body.ISBN
+    }
+  //Title validation by Rejex
+    if (!validatefeild(Bookdetails.title)) {
+      return res.status(400).send({status: false,msg: "Title must contain Alphabet or Number",});
+    }
+
+    const findtitle = await BookModel.findOne({ title:req.body.title }); //title exist or not
+
+    if(findtitle){
+    return res.status(404).send({ status:false,message:`${req.body.title} Title Already Exist.Please,Give Another Title`})
+    }
+
+
+    if (!validatefeild(Bookdetails.excerpt)) {
+      return res.status(400).send({status: false,msg: "excerpt must contain Alphabet or Number",});
+    }
+
+
+    if (!isValidISBN(Bookdetails.ISBN)) {
+      return res.status(400).send({status: false,msg: "INVALID ISBN",});
+    }
+    const findISBN=await BookModel.findOne({ISBN:req.body.ISBN})  //gives whole data
+
+
+    if(findISBN){
+      return res.status(400).send({status:false, msg: `${req.body.ISBN} ISBN Already Exist.Please,Give Another ISBN` })
+
+    }
+
+    Bookdetails.save()
+    res.status(200).send({status:true, msg: Bookdetails })
+
+}
+catch (err) {
+    res.status(500).send({status:false, error: err.message })
+}
+}
+
+//...................................................DELETE /books/:bookId..........................................................
+
+
+const deleteBooksById= async function (req, res) {
+
+  try {
+    const id = req.params.bookId
+      if (id) {
+
+        let isValidbookId = mongoose.Types.ObjectId.isValid(id);
+
+        if (!isValidbookId) {
+            return res.status(400).send({ status: false, msg: "bookId is Not Valid" });
+        }}
+      const Bookdetails = await BookModel.findById(id)
+      if(!Bookdetails){
+        return res.status(404).send({ status: false, msg: "No Books Exist" })
+      }
+      if(Bookdetails.isDeleted==true){
+        return res.status(404).send({ status: false, msg: "This Data is already Deleted" })
+      }
+    let allBooks = await BookModel.findOneAndUpdate({ _id: id, isDeleted: false }, { $set: { isDeleted: true, deletedAt:new Date() } }, { new: true,upsert:true })
+      if (allBooks)
+      return res.status(200).send({ status: true, data: allBooks })
+    }
+  catch (err) {
+      res.status(500).send({ status: false, msg: err.message })
+  }
+}
+
+
+
+
+
+
+
 module.exports.createBook=createBook
 module.exports.getbooks=getbooks
 module.exports.getbooksbyId=getbooksbyId
+module.exports.updateBooksById=updateBooksById
+module.exports.deleteBooksById=deleteBooksById
