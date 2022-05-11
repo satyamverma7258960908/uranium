@@ -1,8 +1,9 @@
 const BookModel = require("../Models/BooksModel")
 const userModel = require("../Models/usermodel")
+const reviewModel=require("../Models/reviewmodel")
 const jwt = require("jsonwebtoken");
 const mongoose = require('mongoose')
-const moment=require("moment")
+
 
 
 
@@ -236,15 +237,18 @@ const getbooksbyId = async (req, res) => {
       }
 
       if (findbookid.isDeleted == false) {
-        const userdata=await userModel.find(findbookid.userId)
+        const findreview=await reviewModel.find({bookId:id,isDeleted:false}).select({_id:1,bookId:1,reviewedBy:1, reviewedAt:1,rating:1,review:1})
+        if(findreview.length==0){
+          return res.status(400).send({ status: false, msg: "No Reviews For This BookId " });
+        }
 
 
       const bookdetails=JSON.parse(JSON.stringify(findbookid))
-      bookdetails.reviewsData=userdata
+      bookdetails.reviewsData=findreview
 
-     res.status(200).send({status:true,message:"Books list",data: bookdetails})
+      return res.status(200).send({status:true,message:"Books list",data: bookdetails})
       }
-      res.status(404).send({status:false,message:"Books Not Found"})
+      return res.status(404).send({status:false,message:"Books Not Found"})
 }
 
   catch (err) {
