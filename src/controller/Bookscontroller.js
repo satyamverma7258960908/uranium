@@ -10,7 +10,7 @@ const mongoose = require('mongoose')
 //STRING VALIDATION BY REJEX
 const validatefeild= (shivam) => {
   return String(shivam).trim().match(
-      /^[a-zA-Z]/);
+    /^[A-Za-z0-9\s\-_,\.;:()]+$/);
  };
 
 //ISBN VALIDATION BY REJEX
@@ -139,10 +139,10 @@ const createBook = async (req, res) => {
 
          if(reviews){
             obj.reviews=reviews
-         }
+         
         if (typeof(reviews)!="number"){
         return res.status(400).send({status:false,message:"Invalid reviews Format"});
-    }
+    }}
 
     if (isDeleted){
         obj.isDeleted=isDeleted
@@ -238,15 +238,16 @@ const getbooksbyId = async (req, res) => {
 
       if (findbookid.isDeleted == false) {
         const findreview=await reviewModel.find({bookId:id,isDeleted:false}).select({_id:1,bookId:1,reviewedBy:1, reviewedAt:1,rating:1,review:1})
-        if(findreview.length==0){
+        /* if(findreview.length==0){
           return res.status(400).send({ status: false, msg: "No Reviews For This BookId " });
-        }
+        } */
 
 
       const bookdetails=JSON.parse(JSON.stringify(findbookid))
       bookdetails.reviewsData=findreview
 
       return res.status(200).send({status:true,message:"Books list",data: bookdetails})
+      
       }
       return res.status(404).send({status:false,message:"Books Not Found"})
 }
