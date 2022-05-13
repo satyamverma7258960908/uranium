@@ -69,7 +69,7 @@ const createReview = async (req, res) => {
           .status(400)
           .send({ status: false, message: "Invalid rating Format" });
       }
-      if (!(rating > 0 && rating < 5)) {
+      if(data.rating <= 0 || data.rating > 5) {
         return res
           .status(400)
           .send({ status: false, msg: "Rating should be in between 1-5 " });
@@ -103,18 +103,34 @@ const createReview = async (req, res) => {
             });
         }
       }
-
+      data.bookId=bookId
       const reviews = await reviewModel.create(obj);
-      return res.status(201).send({ status: true, msg: reviews });
+     let updateBook= await BookModel.findByIdAndUpdate({_id:bookId},{$inc:{reviews:+1}})
+      return res.status(200).send({ status: true, msg: reviews ,data:updateBook});
     }
 
-    return res
-      .status(400)
-      .send({ status: false, msg: "Sorry,This Book Not Exist" });
+    return res.status(400).send({ status: false, msg: "Sorry,This Book Not Exist" });
   } catch (err) {
     res.status(500).send({ status: false, error: err.message });
   }
 };
+//=======================PUT /books/:bookId/review/:reviewId================================//
+ const updateReview =async(req,res)=>{
+   const bookId=req.params.bookId
+   const reviewId=req.params.reviewId
+   if(bookId){
+     let isValidBookId=mongoose.Types.ObjectId.isValid(bookId);
+     if(!isValidBookId){
+       return res.status(400).send({status:false,msg:"bookId is Not Valid"})
+     }
+   }
+   if(reviewId){
+    let isValideviewId=mongoose.Types.ObjectId.isValid(bookId);
+    if(!isValideviewId){
+      return res.status(400).send({status:false,msg:"reviewId is Not Valid"})
+    }
+   }
 
+ }
 
 module.exports.createReview = createReview;
