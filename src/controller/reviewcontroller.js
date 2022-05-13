@@ -15,20 +15,6 @@ const createReview = async (req, res) => {
     const id=req.params.bookId
     let data=req.body
 
-    /* if(!id){
-      return res.status(404).send({ status:true,msg:"bookId not given"})
-  }
-     let isValidbookId = mongoose.Types.ObjectId.isValid(id);//check if objectId is valid objectid
-
-     if (!isValidbookId){
-          return res.status(400).send({ status: false, msg: "BookId is Not Valid" });
-     }
-
-    const findbookid = await BookModel.findById(id)
-    if(!findbookid){
-    return res.status(400).send({ status: false, msg: "Incorrect BookId" });
-    }
- */
     if (Object.keys(data).length == 0) {
       return res.status(400).send({status: false,msg: "Feild Can't Empty.Please Enter Some Details",
         });
@@ -43,7 +29,6 @@ const createReview = async (req, res) => {
     const rating = data.rating;
     const review = data.review;
     const isDeleted = data.isDeleted;
-
     if (!id)
     {
       return res.status(400).send({ status: false, msg: "Please Give bookId" });
@@ -61,14 +46,12 @@ const createReview = async (req, res) => {
 
     if (findbookId)
     {
-      if (!reviewedBy){
-        return res.status(400).send({ status: false, msg: "reviewedBy Not Given" });
-    }
+      if (reviewedBy){
 
       obj.reviewedBy = reviewedBy;
       if (!validatefeild(reviewedBy)){
         return res.status(400).send({ status: false, msg: "Invalid format of reviewedBy" });
-      }
+      }}
 
       let validString = /\d/;
       if (validString.test(reviewedBy.trim()))

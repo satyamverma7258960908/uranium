@@ -40,6 +40,7 @@ const createBook = async (req, res) => {
       return res.status(400).send({status:false, msg: "Feild Can't Empty.Please Enter Some Details" });
     }
     const obj = {
+      
 
         /* releasedAt:[ a.getFullYear(),a.getMonth()+1,a.getDate()].join('-') */
     }
