@@ -10,10 +10,11 @@ const reviewcontroller=require("../controller/reviewcontroller")
 router.post("/register",userController.createuser)
 router.post('/login',userController.login) //login Phase 2
 router.post("/books",middleware.authentication,bookController.createBook)
-router.get('/books',bookController.getbooks)
-router.get('/books/:bookId',bookController.getbooksbyId)
-router.put("/books/:bookId",bookController.updateBooksById)
-router.delete("/books/:bookId",bookController.deleteBooksById)
+router.get('/books',middleware.authentication,bookController.getbooks)
+router.get('/books/:bookId',middleware.authentication,bookController.getbooksbyId)
+router.put("/books/:bookId",middleware.authentication,middleware.authorization,bookController.updateBooksById)
+router.delete("/books/:bookId",middleware.authentication,middleware.authorization,bookController.deleteBooksById)
+
 
 
 

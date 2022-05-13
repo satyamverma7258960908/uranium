@@ -34,7 +34,7 @@ const createBook = async (req, res) => {
 
     const data = req.body;
     let token = req.headers["x-api-key"] || req.headers["x-Api-Key"];
-    const a=new Date()
+
 
     if (Object.keys(data).length == 0) {
       return res.status(400).send({status:false, msg: "Feild Can't Empty.Please Enter Some Details" });
@@ -42,7 +42,7 @@ const createBook = async (req, res) => {
     const obj = {
 
 
-        /* releasedAt:[ a.getFullYear(),a.getMonth()+1,a.getDate()].join('-') */
+
     }
        const title = data.title;
        const excerpt = data.excerpt;
@@ -50,7 +50,6 @@ const createBook = async (req, res) => {
        const ISBN = data.ISBN;
        const category = data.category;
        const subcategory = data.subcategory;
-       const reviews = data.reviews;
        const isDeleted = data.isDeleted;
        const releasedAt = data.releasedAt;
 
@@ -217,9 +216,7 @@ const getbooks= async function (req, res) {  //get books using filter query para
 const getbooksbyId = async (req, res) => {
   try {
         const id=req.params.bookId
-        if(!id){
-          return res.status(404).send({ status:true,msg:"bookId not given"})
-      }
+
       let isValidbookId = mongoose.Types.ObjectId.isValid(id);//check if objectId is valid objectid
           if (!isValidbookId) {
               return res.status(400).send({ status: false, msg: "BookId is Not Valid" });
@@ -347,11 +344,11 @@ const deleteBooksById= async function (req, res) {
         return res.status(404).send({ status: false, msg: "No Books Exist" })
       }
       if(Bookdetails.isDeleted==true){
-        return res.status(404).send({ status: false, msg: "This Data is already Deleted" })
+        return res.status(404).send({ status: false, msg: "This Book is already Deleted" })
       }
     let allBooks = await BookModel.findOneAndUpdate({ _id: id, isDeleted: false }, { $set: { isDeleted: true, deletedAt:new Date() } }, { new: true,upsert:true })
       if (allBooks)
-      return res.status(200).send({ status: true, data: allBooks })
+      return res.status(200).send({ status: true, message: "Successfully Deleted" })
     }
   catch (err) {
       res.status(500).send({ status: false, msg: err.message })

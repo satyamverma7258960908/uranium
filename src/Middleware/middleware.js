@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
-/* const BookModel1 = require("../models/BooksModel");
-const UserModel1 = require("../models/usermodel"); */
+const BookModel= require("../Models/BooksModel");
 const mongoose = require("mongoose");
 
 
@@ -22,63 +21,33 @@ const authentication = async function (req, res, next) {
 };
 
 
-module.exports.authentication=authentication
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* //............................................MIDDLEWARE-FOR AUTHORIZATION..........................................................
+//............................................MIDDLEWARE-FOR AUTHORIZATION..........................................................
 
 
 const authorization = async function (req, res, next) {
-  try {
+  try
+    {
     let token = req.headers["x-api-key"] || req.headers["x-Api-Key"]; //token has jwt token
 
-    const id = req.params.blogId; //blogId is coming from path paramter
+    const id = req.params.bookId;
 
+   if(id){
+    let isValidbookId = mongoose.Types.ObjectId.isValid(id);
+    if (!isValidbookId) {
+      return res.status(400).send({ status: false, msg: "bookId is Not Valid type of ObjectId" });
+    }}
 
-    let isValidblogID = mongoose.Types.ObjectId.isValid(id);
-    //Check BlogId on the basis of length
-    if (!isValidblogID) {
-      return res.status(400).send({ status: false, msg: "Blog Id is Not Valid" });
+    const findbookdatabyId = await BookModel.findById(id).select({userId:1})
+    console.log(findbookdatabyId)
+    if(!findbookdatabyId){
+      return res.status(400).send({ status: false, msg: "Incorrect BookId" });
     }
 
-    const blog = await BlogModel.findById(id); //finding Id which is stored in id variable in 3rd line after try block
-    if (!blog)
-      return res.status(404).send({ status:false,msg: "BlogId dont exist" });
+      let decodedtoken = jwt.verify(token, "group51");
 
-    const decodedtoken = jwt.verify(token, "group11");
-   /*  if (!decodedtoken)
-      return res.status(401).send({ status: false, msg: "token is invalid" });
- */
-    /* if (blog.authorId != decodedtoken.authorId)
-      //match token authorId with blogdocument AuthorId
+      if (decodedtoken.UserId != findbookdatabyId.userId)
       return res.status(403).send({ status: false, msg: "Sorry,You cannot access" });
 
     next(); //if match then move the execution to next
@@ -87,4 +56,6 @@ const authorization = async function (req, res, next) {
   }
 };
 
-module.exports = { authentication, authorization }; */
+
+module.exports.authentication=authentication
+module.exports.authorization=authorization
