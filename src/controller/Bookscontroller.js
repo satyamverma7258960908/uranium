@@ -40,7 +40,7 @@ const createBook = async (req, res) => {
       return res.status(400).send({status:false, msg: "Feild Can't Empty.Please Enter Some Details" });
     }
     const obj = {
-      
+
 
         /* releasedAt:[ a.getFullYear(),a.getMonth()+1,a.getDate()].join('-') */
     }
@@ -136,14 +136,6 @@ const createBook = async (req, res) => {
           if (!validatefeild(subcategory[i])) {
             return res.status(400).send({status: false,msg: "subcategory must contain Alphabet or Number",});
           }}
-
-
-         if(reviews){
-            obj.reviews=reviews
-         
-        if (typeof(reviews)!="number"){
-        return res.status(400).send({status:false,message:"Invalid reviews Format"});
-    }}
 
     if (isDeleted){
         obj.isDeleted=isDeleted
@@ -248,7 +240,7 @@ const getbooksbyId = async (req, res) => {
       bookdetails.reviewsData=findreview
 
       return res.status(200).send({status:true,message:"Books list",data: bookdetails})
-      
+
       }
       return res.status(404).send({status:false,message:"Books Not Found"})
 }

@@ -15,14 +15,17 @@ router.get('/books/:bookId',bookController.getbooksbyId)
 router.put("/books/:bookId",bookController.updateBooksById)
 router.delete("/books/:bookId",bookController.deleteBooksById)
 
+
+
+
+
 router.post('/books/:bookId/review',reviewcontroller.createReview)
-
-
-
+router.put("/books/:bookId/review/:reviewId",reviewcontroller.updateReview)
+router.delete("/books/:bookId/review/:reviewId",reviewcontroller.deleteReview)
 
 
 router.post("*", (req,res) =>{
-    
+
     return res.status(404).send({ msg:"Page Not Found"})
 })
 router.get("*", (req,res) =>{
