@@ -44,13 +44,15 @@ const createReview = async (req, res) => {
     const findbookId = await BookModel.findOne({ _id: bookId, isDeleted: false, });
 
     if (findbookId) {
-      if (reviewedBy) {
+      if (!reviewedBy) {
+        return res.status(400).send({ status: false, msg: "ReviewedBy must be present" })
+      }
         obj.reviewedBy = reviewedBy
 
         if (!validatefeild(reviewedBy)) {
           return res.status(400).send({ status: false, msg: "Invalid format of reviewedBy" });
         }
-      }
+      
 
       let validString = /\d/;
       if (validString.test(reviewedBy)) {
@@ -110,11 +112,13 @@ const createReview = async (req, res) => {
       return res.status(200).send({ status: true, message: "Books with Reviews", data: bookdetails })
 
     }
+  
+  
     return res.status(400).send({ status: false, msg: "Sorry,This Book Not Exist" });
   } catch (err) {
     res.status(500).send({ status: false, error: err.message });
   }
-};
+;}
 //=========================================PUT /books/:bookId/review/:reviewId==========================================//
 
 
@@ -247,7 +251,7 @@ const deleteReview = async (req, res) => {
 
 
     return res.status(200).send({ status: true, message: "Review Deleted Successfully" })
-
+  
   }
   catch (err) {
     res.status(500).send({ status: false, msg: err.message })

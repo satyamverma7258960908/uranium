@@ -31,7 +31,7 @@ const createuser = async (req, res) => {
       return String(name).trim().match(
         /^[a-zA-Z0-9_.-]/);
     };
-
+ 
 
     //VALIDATION OF MOBILE NO BY REJEX
     const validateNumber = (Feild) => {
@@ -110,7 +110,7 @@ const createuser = async (req, res) => {
     if (!validatePassword(data.password)) {
       return res.status(400).send({ status: false, msg: "Password should contain at-least one number,one special character and one capital letter", }); //password validation
     }
-
+if(data.address){
     if (data.address.street) {
       if (!validatestreet(data.address.street)) {
         return res.status(400).send({ status: false, msg: "Street must contain Alphabet or Number", });
@@ -128,7 +128,7 @@ const createuser = async (req, res) => {
       if (!validatepincode(data.address.pincode)) {
         return res.status(400).send({ status: false, msg: "Invalid Pincode", });
       }
-    }
+    }}
 
     const user = await userModel.create(data);
     return res.status(201).send({ status: true, msg: user });

@@ -159,11 +159,11 @@ const createBook = async (req, res) => {
     let decodedtoken = jwt.verify(token, "group51");
 
     if (decodedtoken.UserId != obj.userId) {
-      return res.status(403).send({ status: false, msg: "You are Not Authorized To create This Book With This userId" });
+      return res.status(403).send({ status: false, message: "You are Not Authorized To create This Book With This userId" });
     }
 
     const Books = await BookModel.create(obj);
-    return res.status(201).send({ status: true, msg: Books });
+    return res.status(201).send({ status: true, message:"Success",data:Books });
 
   }
   catch (err) {
@@ -226,7 +226,8 @@ const getbooksbyId = async (req, res) => {
     if (!isValidbookId) {
       return res.status(400).send({ status: false, msg: "BookId is Not Valid" });
     }
-    const findbookid = await BookModel.findById(id)
+    const findbookid = await BookModel.findById(id).select({ISBN:0,deletedAt:0,__v:0})
+
     if (!findbookid) {
       return res.status(400).send({ status: false, msg: "Incorrect BookId" });
     }
@@ -317,8 +318,12 @@ const updateBooksById = async function (req, res) {
     if (findISBN) {
       return res.status(400).send({ status: false, msg: `${req.body.ISBN} ISBN Already Exist.Please,Give Another ISBN` })
 
+    
     }
-
+   
+    if (!isValidDate(Bookdetails.releasedAt)) {
+      return res.status(400).send({ status: false, msg: "Invalid Format of releasedAt", });
+    }
     Bookdetails.save()
     res.status(200).send({ status: true, msg: Bookdetails })
 
@@ -347,12 +352,12 @@ const deleteBooksById = async function (req, res) {
     if (!Bookdetails) {
       return res.status(400).send({ status: false, msg: "No Books Exist" })
     }
-    const countreviews = Bookdetails.reviews
+    //const countreviews = Bookdetails.reviews
 
     if (Bookdetails.isDeleted == true) {
       return res.status(404).send({ status: false, msg: "This Book is already Deleted" })
     }
-    let allBooks = await BookModel.findOneAndUpdate({ _id: id, isDeleted: false }, { $set: { isDeleted: true, deletedAt: new Date(), reviews: countreviews - countreviews } }, { new: true, upsert: true })
+    let allBooks = await BookModel.findOneAndUpdate({ _id: id, isDeleted: false }, { $set: { isDeleted: true, deletedAt: new Date(), reviews:0} }, { new: true, upsert: true })
     //if (allBooks)
     await reviewModel.updateMany({ bookId: id }, { isDeleted: true}, { new: true, upsert: true })
     return res.status(200).send({ status: true, message: "Successfully Deleted" })
