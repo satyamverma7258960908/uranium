@@ -354,7 +354,7 @@ const deleteBooksById = async function (req, res) {
     }
     let allBooks = await BookModel.findOneAndUpdate({ _id: id, isDeleted: false }, { $set: { isDeleted: true, deletedAt: new Date(), reviews: countreviews - countreviews } }, { new: true, upsert: true })
     //if (allBooks)
-    await reviewModel.updateMany({ bookId: id }, { isDeleted: true, deletedAt: new Date() }, { new: true, upsert: true })
+    await reviewModel.updateMany({ bookId: id }, { isDeleted: true}, { new: true, upsert: true })
     return res.status(200).send({ status: true, message: "Successfully Deleted" })
   }
   catch (err) {
