@@ -44,9 +44,7 @@ const createReview = async (req, res) => {
     const findbookId = await BookModel.findOne({ _id: bookId, isDeleted: false, });
 
     if (findbookId) {
-      if (!reviewedBy) {
-        return res.status(400).send({ status: false, msg: "ReviewedBy must be present" })
-      }
+      if (reviewedBy) {
         obj.reviewedBy = reviewedBy
 
         if (!validatefeild(reviewedBy)) {
@@ -57,7 +55,7 @@ const createReview = async (req, res) => {
       let validString = /\d/;
       if (validString.test(reviewedBy)) {
         return res.status(400).send({ status: false, msg: "reviewedBy must be valid it should not contains numbers", });
-      }
+      }}
       if (!rating) {
         return res.status(400).send({ status: false, msg: "Rating is missing" });
       }

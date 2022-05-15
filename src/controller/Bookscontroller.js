@@ -19,8 +19,12 @@ const isValidISBN = (ISBN) => {
 }
 
 //Rejex For ReleasedAT
-const isValidDate = (date) => {
+/* const isValidDate = (date) => {
   return String(date).trim().match(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/gm)
+} */
+
+const isValidDate = (date) => {
+  return String(date).trim().match(/((18|19|20)[0-9]{2}[\-.](0[13578]|1[02])[\-.](0[1-9]|[12][0-9]|3[01]))|(18|19|20)[0-9]{2}[\-.](0[469]|11)[\-.](0[1-9]|[12][0-9]|30)|(18|19|20)[0-9]{2}[\-.](02)[\-.](0[1-9]|1[0-9]|2[0-8])|(((18|19|20)(04|08|[2468][048]|[13579][26]))|2000)[\-.](02)[\-.]29/)
 }
 
 
@@ -41,11 +45,7 @@ const createBook = async (req, res) => {
     if (Object.keys(data).length == 0) {
       return res.status(400).send({ status: false, msg: "Feild Can't Empty.Please Enter Some Details" });
     }
-    const obj = {
-
-
-
-    }
+    const obj = { }
     const title = data.title;
     const excerpt = data.excerpt;
     const userId = data.userId;
@@ -352,7 +352,7 @@ const deleteBooksById = async function (req, res) {
     if (!Bookdetails) {
       return res.status(400).send({ status: false, msg: "No Books Exist" })
     }
-    //const countreviews = Bookdetails.reviews
+    
 
     if (Bookdetails.isDeleted == true) {
       return res.status(404).send({ status: false, msg: "This Book is already Deleted" })
